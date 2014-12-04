@@ -182,7 +182,7 @@ public class Swiftuna : NSObject {
     }
     
     /**
-    This method updated the menu view with new options
+    This method updates the menu view with new options
     
     :param: options The new options to show
     */
