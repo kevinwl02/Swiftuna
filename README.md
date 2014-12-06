@@ -17,7 +17,7 @@ As there is still not good dependency management support for Swift, one easy way
 2. Once you have downloaded the source, add the `Swiftuna.xcodeproj` as a subproject of your main project.
 3. In your main project's General tab, add the `Swiftuna.framework` as an embedded framework.
 
-Then, to use, import te `Swiftuna` framework:
+Then, to use, import the `Swiftuna` framework:
 
 ```swift
 import Swiftuna
