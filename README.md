@@ -1,7 +1,7 @@
 ![SwiftunaLogo](/../github-media/media/swiftunaLogo.png?raw=true)
 
 Swiftuna is a decorator library that lets any view have a cool swipe-to-reveal options menu.
-Originally created for the Notebits app ( which Apple has still not approved :( ).
+Originally created for [Notebits](https://itunes.apple.com/us/app/notebits/id946399467?ls=1&mt=8).
 
 ##Example
 
