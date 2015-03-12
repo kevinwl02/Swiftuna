@@ -11,7 +11,15 @@ The example's source code can be found in the SwiftunaExample project.
 
 ##Installation
 
-As there is still not good dependency management support for Swift, one easy way to install is to do the following:
+###Cocoapods:
+
+Add this to your Podfile:
+
+```ruby
+pod 'Swiftuna', '~> 0.0.2'
+```
+
+###Manual installation:
 
 1. Add this repository as a git submodule of your project. (optional)
 2. Once you have downloaded the source, add the `Swiftuna.xcodeproj` as a subproject of your main project.
