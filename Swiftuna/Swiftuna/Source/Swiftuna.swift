@@ -34,11 +34,11 @@ private let kOptionsHorizontalSpacing : CGFloat = 5.0
     /**
     Method to be called whenever an option is selected
     
-    :param: swiftuna The swiftuna object that initiated the call
-    :param: option   The option that was selected
-    :param: index    The index of the selected option
+    - parameter swiftuna: The swiftuna object that initiated the call
+    - parameter option:   The option that was selected
+    - parameter index:    The index of the selected option
     
-    :returns: Void
+    - returns: Void
     */
     func swiftuna(swiftuna : Swiftuna, didSelectOption option : SwiftunaOption, index : Int)
     
@@ -47,11 +47,11 @@ private let kOptionsHorizontalSpacing : CGFloat = 5.0
     Must indicate if the options view should be dismissed after selection.
     The default value is true.
     
-    :param: swiftuna The swiftuna object that initiated the call
-    :param: option   The option that was selected
-    :param: index    The index of the selected option
+    - parameter swiftuna: The swiftuna object that initiated the call
+    - parameter option:   The option that was selected
+    - parameter index:    The index of the selected option
     
-    :returns: Wether the options view should be dismissed or not
+    - returns: Wether the options view should be dismissed or not
     */
     optional func swiftuna(swiftuna : Swiftuna, shouldDismissAfterSelectionOfOption option : SwiftunaOption, index : Int) -> Bool
 }
@@ -119,11 +119,11 @@ public class Swiftuna : NSObject {
     The main initializer of the decorator which sets up its initial properties,
     including default values.
     
-    :param: targetView The view to which the swipe menu will be attached
-    :param: options    The options to display in the menu. The first option is
+    - parameter targetView: The view to which the swipe menu will be attached
+    - parameter options:    The options to display in the menu. The first option is
     displayed to the left.
     
-    :returns: The initialized Swiftuna instance
+    - returns: The initialized Swiftuna instance
     */
     public init(targetView : UIView, options : [SwiftunaOption]) {
         
@@ -161,7 +161,7 @@ public class Swiftuna : NSObject {
         removeViews()
         optionsView.removeFromSuperview()
         
-        objc_setAssociatedObject(targetView, kAssociationKey, nil, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
+        objc_setAssociatedObject(targetView, kAssociationKey, nil, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
     
     /**
@@ -184,7 +184,7 @@ public class Swiftuna : NSObject {
     /**
     This method updates the menu view with new options
     
-    :param: options The new options to show
+    - parameter options: The new options to show
     */
     public func refreshWithNewOptions(options : [SwiftunaOption]) {
      
@@ -200,7 +200,7 @@ public class Swiftuna : NSObject {
         
         optionsView.frame = CGRectMake(0, 0, 0, 100)
         optionsView.hidden = true
-        optionsView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        optionsView.translatesAutoresizingMaskIntoConstraints = false
         targetView.addSubview(optionsView)
         
         let optionsViewWidth = optionsViewCalculatedWidth()
@@ -230,7 +230,7 @@ public class Swiftuna : NSObject {
             let optionItem = UIButton()
             optionItem.tag = iterationCounter
             optionItem.addTarget(self, action: "optionSelected:", forControlEvents: UIControlEvents.TouchUpInside)
-            optionItem.setTranslatesAutoresizingMaskIntoConstraints(false)
+            optionItem.translatesAutoresizingMaskIntoConstraints = false
             optionsView.addSubview(optionItem)
             optionItem.setBackgroundImage(option.image, forState: UIControlState.Normal)
             
@@ -264,7 +264,7 @@ public class Swiftuna : NSObject {
     
     private func setupDismissView() {
         
-        dismissView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        dismissView.translatesAutoresizingMaskIntoConstraints = false
         targetView.addSubview(dismissView)
         let dismissViewLayoutDictionary = ["dismissView": dismissView]
         NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[dismissView]|", options: NSLayoutFormatOptions.DirectionLeadingToTrailing, metrics: nil, views: dismissViewLayoutDictionary))
@@ -277,7 +277,7 @@ public class Swiftuna : NSObject {
     
     private func setupBackgroundView() {
     
-        backgroundView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        backgroundView.translatesAutoresizingMaskIntoConstraints = false
         targetView.addSubview(backgroundView)
         
         let backgroundViewDictionary = ["backgroundView": backgroundView]
@@ -297,7 +297,7 @@ public class Swiftuna : NSObject {
     
     private func attachToView() {
         
-        objc_setAssociatedObject(targetView, kAssociationKey, self, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
+        objc_setAssociatedObject(targetView, kAssociationKey, self, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
     
     //MARK: Private methods - Interaction
@@ -318,7 +318,7 @@ public class Swiftuna : NSObject {
             
             var iteratorCount = 0.0
             for optionView in optionsView.subviews {
-                animateOption(optionView as UIButton, delay: iteratorCount * 0.1)
+                animateOption(optionView as! UIButton, delay: iteratorCount * 0.1)
                 iteratorCount++
             }
         }
@@ -352,7 +352,7 @@ public class Swiftuna : NSObject {
         
         var iteratorCount = 0.0
         for optionView in optionsView.subviews {
-            animateBackOption(optionView as UIButton, delay: (Double(options.count) - iteratorCount - 1.0) * 0.1)
+            animateBackOption(optionView as! UIButton, delay: (Double(options.count) - iteratorCount - 1.0) * 0.1)
             iteratorCount++
         }
     }
@@ -395,16 +395,19 @@ public class Swiftuna : NSObject {
     
     private func setupSnapshotView() {
         
+        snapshotView = UIImageView(frame: targetView.bounds)
+        
         UIGraphicsBeginImageContextWithOptions(targetView.frame.size, targetView.opaque, 0.0)
         let context = UIGraphicsGetCurrentContext()
         
-        targetView.layer.renderInContext(context)
-        let snapshotImage = UIGraphicsGetImageFromCurrentImageContext()
+        if let unwrappedContext : CGContext = context {
+            targetView.layer.renderInContext(unwrappedContext)
+            let snapshotImage = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            
+            snapshotView!.image = snapshotImage
+        }
         
-        UIGraphicsEndImageContext()
-        
-        snapshotView = UIImageView(frame: targetView.bounds)
-        snapshotView!.image = snapshotImage
         snapshotView!.layer.allowsEdgeAntialiasing = true
         
         backgroundView.addSubview(snapshotView!)

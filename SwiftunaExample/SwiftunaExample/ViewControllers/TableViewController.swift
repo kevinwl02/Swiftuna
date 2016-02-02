@@ -29,10 +29,10 @@ class TableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier(kExampleCellIdentifier) as ExampleCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(kExampleCellIdentifier) as! ExampleCell
         
-        cell.exampleTitleLabel.text = NSString(format: "Title for item number %d", indexPath.row)
-        cell.exampleDescriptionLabel.text = NSString(format: "Description for item number %d", indexPath.row)
+        cell.exampleTitleLabel.text = String(format: "Title for item number %d", indexPath.row)
+        cell.exampleDescriptionLabel.text = String(format: "Description for item number %d", indexPath.row)
         decorateCell(cell)
         
         return cell

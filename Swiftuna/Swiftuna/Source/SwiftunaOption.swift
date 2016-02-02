@@ -42,9 +42,9 @@ public class SwiftunaOption : NSObject {
     /**
     Initializes the option with an image to display and default size
     
-    :param: image The image that will represent the option
+    - parameter image: The image that will represent the option
     
-    :returns: The initialized option
+    - returns: The initialized option
     */
     public init(image : UIImage) {
         
