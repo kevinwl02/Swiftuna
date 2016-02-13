@@ -11,7 +11,7 @@ The example's source code can be found in the SwiftunaExample project.
 
 ##Installation
 
-###Cocoapods:
+###CocoaPods:
 
 Add this to your Podfile:
 
