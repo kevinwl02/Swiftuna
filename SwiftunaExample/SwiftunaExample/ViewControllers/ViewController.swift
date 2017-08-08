@@ -24,7 +24,7 @@ class ViewController: UIViewController, SwiftunaDelegate {
     
     //MARK: Private methods
     
-    private func decorateViews() {
+    fileprivate func decorateViews() {
         
         let labelOptions = [
             SwiftunaOption(image: UIImage(named: "Search")!)
@@ -36,7 +36,7 @@ class ViewController: UIViewController, SwiftunaDelegate {
         ]
         
         let labelSwiftuna = Swiftuna(targetView: label, options: labelOptions)
-        labelSwiftuna.backgroundViewColor = UIColor.whiteColor()
+        labelSwiftuna.backgroundViewColor = UIColor.white
         labelSwiftuna.delegate = self
         labelSwiftuna.attach()
         
@@ -44,15 +44,15 @@ class ViewController: UIViewController, SwiftunaDelegate {
         
         let viewSwiftuna = Swiftuna(targetView: compoundView, options: likeOptions)
         viewSwiftuna.optionsSpacing = 20
-        viewSwiftuna.backgroundViewColor = UIColor.whiteColor()
+        viewSwiftuna.backgroundViewColor = UIColor.white
         viewSwiftuna.attach()
     }
     
     //MARK: SwiftunaDelegate
     
-    func swiftuna(swiftuna: Swiftuna, didSelectOption option: SwiftunaOption, index: Int) {
+    func swiftuna(_ swiftuna: Swiftuna, didSelectOption option: SwiftunaOption, index: Int) {
         
-        performSegueWithIdentifier(kShowTableSegueIdentifier, sender: nil)
+        performSegue(withIdentifier: kShowTableSegueIdentifier, sender: nil)
     }
 
 }

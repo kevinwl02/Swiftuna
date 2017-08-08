@@ -40,7 +40,7 @@ private let kOptionsHorizontalSpacing : CGFloat = 5.0
     
     - returns: Void
     */
-    func swiftuna(swiftuna : Swiftuna, didSelectOption option : SwiftunaOption, index : Int)
+    func swiftuna(_ swiftuna : Swiftuna, didSelectOption option : SwiftunaOption, index : Int)
     
     /**
     Optional method to be called after selection of an option.
@@ -53,32 +53,32 @@ private let kOptionsHorizontalSpacing : CGFloat = 5.0
     
     - returns: Wether the options view should be dismissed or not
     */
-    optional func swiftuna(swiftuna : Swiftuna, shouldDismissAfterSelectionOfOption option : SwiftunaOption, index : Int) -> Bool
+    @objc optional func swiftuna(_ swiftuna : Swiftuna, shouldDismissAfterSelectionOfOption option : SwiftunaOption, index : Int) -> Bool
 }
 
 /**
 *  Decorator class that sets up a view with a swipe to open options
 *  menu
 */
-public class Swiftuna : NSObject {
+open class Swiftuna : NSObject {
     
     //MARK: Public Variables
     
     /// The reference delegate object
-    public weak var delegate : SwiftunaDelegate?
+    open weak var delegate : SwiftunaDelegate?
     
     /// The view that is decorated with the options menu
-    public unowned var targetView : UIView {
+    open unowned var targetView : UIView {
         get {
             return _targetView
         }
     }
     
     /// A tag to identify the Swiftuna instance
-    public var tag : AnyObject?
+    open var tag : AnyObject?
     
     /// The options that are represented in the menu
-    public var options : [SwiftunaOption] {
+    open var options : [SwiftunaOption] {
         get {
             return _options
         }
@@ -86,11 +86,11 @@ public class Swiftuna : NSObject {
     
     /// Indicates if swiping the viw will trigger the options menu.
     /// By default it is true
-    public var swipeEnabled : Bool = true
+    open var swipeEnabled : Bool = true
     
     /// The background color of the view that is displayed when the
     /// options menu is triggered. Should not be a translucent color.
-    public var backgroundViewColor : UIColor? {
+    open var backgroundViewColor : UIColor? {
         get {
             return backgroundView.backgroundColor
         }
@@ -101,17 +101,17 @@ public class Swiftuna : NSObject {
     
     /// The current spacing in between options. It defaults to
     /// kOptionsHorizontalSpacing
-    public var optionsSpacing : CGFloat
+    open var optionsSpacing : CGFloat
     
     //MARK: Private variables
     
-    private unowned var _targetView : UIView
-    private var _options : [SwiftunaOption]
-    private var optionsView : UIView
-    private var didShowMenu : Bool = false
-    private var snapshotView : UIImageView?
-    private var dismissView : UIButton
-    private var backgroundView : UIView
+    fileprivate unowned var _targetView : UIView
+    fileprivate var _options : [SwiftunaOption]
+    fileprivate var optionsView : UIView
+    fileprivate var didShowMenu : Bool = false
+    fileprivate var snapshotView : UIImageView?
+    fileprivate var dismissView : UIButton
+    fileprivate var backgroundView : UIView
     
     //MARK: Initializers
     
@@ -131,7 +131,7 @@ public class Swiftuna : NSObject {
         optionsView = UIView()
         dismissView = UIButton()
         backgroundView = UIView()
-        backgroundView.backgroundColor = UIColor.blackColor()
+        backgroundView.backgroundColor = UIColor.black
         _options = options
         optionsSpacing = kOptionsHorizontalSpacing
         
@@ -144,7 +144,7 @@ public class Swiftuna : NSObject {
     This does the actual attaching and layout of the swipe menu.
     This should always be called after all configuration has been made.
     */
-    public func attach() {
+    open func attach() {
         
         setupBackgroundView()
         setupDismissView()
@@ -156,7 +156,7 @@ public class Swiftuna : NSObject {
     /**
     Detaches the swipe menu from the target view.
     */
-    public func detach() {
+    open func detach() {
         
         removeViews()
         optionsView.removeFromSuperview()
@@ -168,16 +168,16 @@ public class Swiftuna : NSObject {
     This method resets the swipe menu to its original and untriggered
     state.
     */
-    public func reset() {
+    open func reset() {
         
         didShowMenu = false
-        self.dismissView.hidden = true
-        self.optionsView.hidden = true
-        self.backgroundView.hidden = true
+        self.dismissView.isHidden = true
+        self.optionsView.isHidden = true
+        self.backgroundView.isHidden = true
         self.snapshotView?.removeFromSuperview()
         
         for optionView in optionsView.subviews as [UIView] {
-            optionView.transform = CGAffineTransformIdentity
+            optionView.transform = CGAffineTransform.identity
         }
     }
     
@@ -186,7 +186,7 @@ public class Swiftuna : NSObject {
     
     - parameter options: The new options to show
     */
-    public func refreshWithNewOptions(options : [SwiftunaOption]) {
+    open func refreshWithNewOptions(_ options : [SwiftunaOption]) {
      
         _options = options
         optionsView.removeFromSuperview()
@@ -196,31 +196,31 @@ public class Swiftuna : NSObject {
     
     //MARK: Private methods - Setup
     
-    private func setupOptionsView() {
+    fileprivate func setupOptionsView() {
         
-        optionsView.frame = CGRectMake(0, 0, 0, 100)
-        optionsView.hidden = true
+        optionsView.frame = CGRect(x: 0, y: 0, width: 0, height: 100)
+        optionsView.isHidden = true
         optionsView.translatesAutoresizingMaskIntoConstraints = false
         targetView.addSubview(optionsView)
         
         let optionsViewWidth = optionsViewCalculatedWidth()
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[optionsView]|",
-            options: NSLayoutFormatOptions.DirectionLeadingToTrailing,
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|[optionsView]|",
+            options: NSLayoutFormatOptions(),
             metrics: nil,
             views: ["optionsView": optionsView]))
         NSLayoutConstraint(item: optionsView,
-            attribute: NSLayoutAttribute.Width,
-            relatedBy: NSLayoutRelation.Equal,
+            attribute: NSLayoutAttribute.width,
+            relatedBy: NSLayoutRelation.equal,
             toItem: nil,
-            attribute: NSLayoutAttribute.NotAnAttribute,
+            attribute: NSLayoutAttribute.notAnAttribute,
             multiplier: 1,
-            constant: optionsViewWidth).active = true
-        NSLayoutConstraint(item: optionsView, attribute: NSLayoutAttribute.Right, relatedBy: NSLayoutRelation.Equal, toItem: targetView, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: 0).active = true
+            constant: optionsViewWidth).isActive = true
+        NSLayoutConstraint(item: optionsView, attribute: NSLayoutAttribute.right, relatedBy: NSLayoutRelation.equal, toItem: targetView, attribute: NSLayoutAttribute.right, multiplier: 1, constant: 0).isActive = true
         
         setupOptionsWithOptionsViewWidth(optionsViewWidth)
     }
     
-    private func setupOptionsWithOptionsViewWidth(optionsViewWidth : CGFloat) {
+    fileprivate func setupOptionsWithOptionsViewWidth(_ optionsViewWidth : CGFloat) {
 
         var iterationCounter : Int = 0
         var previousOption : UIButton?
@@ -229,30 +229,30 @@ public class Swiftuna : NSObject {
             
             let optionItem = UIButton()
             optionItem.tag = iterationCounter
-            optionItem.addTarget(self, action: "optionSelected:", forControlEvents: UIControlEvents.TouchUpInside)
+            optionItem.addTarget(self, action: #selector(Swiftuna.optionSelected(_:)), for: UIControlEvents.touchUpInside)
             optionItem.translatesAutoresizingMaskIntoConstraints = false
             optionsView.addSubview(optionItem)
-            optionItem.setBackgroundImage(option.image, forState: UIControlState.Normal)
+            optionItem.setBackgroundImage(option.image, for: UIControlState())
             
-            NSLayoutConstraint(item: optionItem, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: optionsView, attribute: NSLayoutAttribute.CenterY, multiplier: 1, constant: 0).active = true
-            NSLayoutConstraint(item: optionItem, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: option.size.width).active = true
-            NSLayoutConstraint(item: optionItem, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: option.size.height).active = true
+            NSLayoutConstraint(item: optionItem, attribute: NSLayoutAttribute.centerY, relatedBy: NSLayoutRelation.equal, toItem: optionsView, attribute: NSLayoutAttribute.centerY, multiplier: 1, constant: 0).isActive = true
+            NSLayoutConstraint(item: optionItem, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: option.size.width).isActive = true
+            NSLayoutConstraint(item: optionItem, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: option.size.height).isActive = true
             
             if previousOption != nil {
             
-                NSLayoutConstraint(item: optionItem, attribute: NSLayoutAttribute.Left, relatedBy: NSLayoutRelation.Equal, toItem: previousOption, attribute: NSLayoutAttribute.Right, multiplier: 1, constant: optionsSpacing).active = true
+                NSLayoutConstraint(item: optionItem, attribute: NSLayoutAttribute.left, relatedBy: NSLayoutRelation.equal, toItem: previousOption, attribute: NSLayoutAttribute.right, multiplier: 1, constant: optionsSpacing).isActive = true
             }
             else {
             
-                NSLayoutConstraint(item: optionItem, attribute: NSLayoutAttribute.Left, relatedBy: NSLayoutRelation.Equal, toItem: optionsView, attribute: NSLayoutAttribute.Left, multiplier: 1, constant: optionsViewWidth).active = true
+                NSLayoutConstraint(item: optionItem, attribute: NSLayoutAttribute.left, relatedBy: NSLayoutRelation.equal, toItem: optionsView, attribute: NSLayoutAttribute.left, multiplier: 1, constant: optionsViewWidth).isActive = true
             }
         
             previousOption = optionItem
-            iterationCounter++
+            iterationCounter += 1
         }
     }
     
-    private func optionsViewCalculatedWidth() -> CGFloat {
+    fileprivate func optionsViewCalculatedWidth() -> CGFloat {
         
         var width : CGFloat = 0.0
         for option in options {
@@ -262,69 +262,69 @@ public class Swiftuna : NSObject {
         return width
     }
     
-    private func setupDismissView() {
+    fileprivate func setupDismissView() {
         
         dismissView.translatesAutoresizingMaskIntoConstraints = false
         targetView.addSubview(dismissView)
         let dismissViewLayoutDictionary = ["dismissView": dismissView]
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[dismissView]|", options: NSLayoutFormatOptions.DirectionLeadingToTrailing, metrics: nil, views: dismissViewLayoutDictionary))
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[dismissView]|", options: NSLayoutFormatOptions.DirectionLeadingToTrailing, metrics: nil, views: dismissViewLayoutDictionary))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|[dismissView]|", options: NSLayoutFormatOptions(), metrics: nil, views: dismissViewLayoutDictionary))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|[dismissView]|", options: NSLayoutFormatOptions(), metrics: nil, views: dismissViewLayoutDictionary))
         
-        dismissView.backgroundColor = UIColor.clearColor()
-        dismissView.addTarget(self, action: "hideOptionsView", forControlEvents: UIControlEvents.TouchUpInside)
-        dismissView.hidden = true
+        dismissView.backgroundColor = UIColor.clear
+        dismissView.addTarget(self, action: #selector(Swiftuna.hideOptionsView), for: UIControlEvents.touchUpInside)
+        dismissView.isHidden = true
     }
     
-    private func setupBackgroundView() {
+    fileprivate func setupBackgroundView() {
     
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
         targetView.addSubview(backgroundView)
         
         let backgroundViewDictionary = ["backgroundView": backgroundView]
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[backgroundView]|", options: NSLayoutFormatOptions.DirectionLeadingToTrailing, metrics: nil, views: backgroundViewDictionary))
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[backgroundView]|", options: NSLayoutFormatOptions.DirectionLeadingToTrailing, metrics: nil, views: backgroundViewDictionary))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|[backgroundView]|", options: NSLayoutFormatOptions(), metrics: nil, views: backgroundViewDictionary))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|[backgroundView]|", options: NSLayoutFormatOptions(), metrics: nil, views: backgroundViewDictionary))
         
-        backgroundView.hidden = true
+        backgroundView.isHidden = true
     }
     
-    private func setupGestureRecognizer() {
+    fileprivate func setupGestureRecognizer() {
         
-        let swipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: "viewSwiped:")
-        swipeGestureRecognizer.direction = UISwipeGestureRecognizerDirection.Left
+        let swipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(Swiftuna.viewSwiped(_:)))
+        swipeGestureRecognizer.direction = UISwipeGestureRecognizerDirection.left
         targetView.addGestureRecognizer(swipeGestureRecognizer)
-        targetView.userInteractionEnabled = true
+        targetView.isUserInteractionEnabled = true
     }
     
-    private func attachToView() {
+    fileprivate func attachToView() {
         
         objc_setAssociatedObject(targetView, kAssociationKey, self, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
     
     //MARK: Private methods - Interaction
     
-    func viewSwiped(swipeGestureRecognizer : UISwipeGestureRecognizer) {
+    func viewSwiped(_ swipeGestureRecognizer : UISwipeGestureRecognizer) {
         
         if swipeEnabled && !didShowMenu {
             
             didShowMenu = true
             setupSnapshotView()
-            backgroundView.hidden = false
-            dismissView.hidden = false
-            optionsView.hidden = false
+            backgroundView.isHidden = false
+            dismissView.isHidden = false
+            optionsView.isHidden = false
             
-            UIView.animateWithDuration(0.3, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 1, options: UIViewAnimationOptions.CurveEaseOut, animations: { () -> Void in
+            UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 1, options: UIViewAnimationOptions.curveEaseOut, animations: { () -> Void in
                 self.transformSnapshotView()
             }, completion: nil)
             
             var iteratorCount = 0.0
             for optionView in optionsView.subviews {
                 animateOption(optionView as! UIButton, delay: iteratorCount * 0.1)
-                iteratorCount++
+                iteratorCount += 1
             }
         }
     }
     
-    private func removeViews() {
+    fileprivate func removeViews() {
         
         optionsView.removeFromSuperview()
         backgroundView.removeFromSuperview()
@@ -339,25 +339,25 @@ public class Swiftuna : NSObject {
         
         didShowMenu = false
         
-        UIView.animateWithDuration(0.3, animations: { () -> Void in
+        UIView.animate(withDuration: 0.3, animations: { () -> Void in
             self.transformBackSnapshotView()
-        }) { (completed) -> Void in
+        }, completion: { (completed) -> Void in
             if completed {
-                self.dismissView.hidden = true
-                self.optionsView.hidden = true
-                self.backgroundView.hidden = true
+                self.dismissView.isHidden = true
+                self.optionsView.isHidden = true
+                self.backgroundView.isHidden = true
                 self.snapshotView!.removeFromSuperview()
             }
-        }
+        }) 
         
         var iteratorCount = 0.0
         for optionView in optionsView.subviews {
             animateBackOption(optionView as! UIButton, delay: (Double(options.count) - iteratorCount - 1.0) * 0.1)
-            iteratorCount++
+            iteratorCount += 1
         }
     }
     
-    func optionSelected(optionItem : UIButton) {
+    func optionSelected(_ optionItem : UIButton) {
         
         let index = optionItem.tag
         delegate?.swiftuna(self, didSelectOption: options[index], index: index)
@@ -374,34 +374,34 @@ public class Swiftuna : NSObject {
     
     //MARK: Private methods - Animation
     
-    private func animateOption(option : UIButton, delay : NSTimeInterval) {
+    fileprivate func animateOption(_ option : UIButton, delay : TimeInterval) {
         
         let width = optionsView.bounds.size.width + optionsSpacing * CGFloat(options.count)
         option.alpha = 0
         
-        UIView.animateWithDuration(0.4, delay: delay, usingSpringWithDamping: 0.8, initialSpringVelocity: 1, options: UIViewAnimationOptions.CurveEaseOut, animations: { () -> Void in
-            option.transform = CGAffineTransformTranslate(option.transform, -width, 0)
+        UIView.animate(withDuration: 0.4, delay: delay, usingSpringWithDamping: 0.8, initialSpringVelocity: 1, options: UIViewAnimationOptions.curveEaseOut, animations: { () -> Void in
+            option.transform = option.transform.translatedBy(x: -width, y: 0)
             option.alpha = 1
         }, completion: nil)
     }
     
-    private func animateBackOption(option : UIButton, delay : NSTimeInterval) {
+    fileprivate func animateBackOption(_ option : UIButton, delay : TimeInterval) {
         
-        UIView.animateWithDuration(0.4, delay: delay, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: UIViewAnimationOptions.CurveEaseOut, animations: { () -> Void in
-            option.transform = CGAffineTransformIdentity
+        UIView.animate(withDuration: 0.4, delay: delay, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: UIViewAnimationOptions.curveEaseOut, animations: { () -> Void in
+            option.transform = CGAffineTransform.identity
             option.alpha = 0
             }, completion: nil)
     }
     
-    private func setupSnapshotView() {
+    fileprivate func setupSnapshotView() {
         
         snapshotView = UIImageView(frame: targetView.bounds)
         
-        UIGraphicsBeginImageContextWithOptions(targetView.frame.size, targetView.opaque, 0.0)
+        UIGraphicsBeginImageContextWithOptions(targetView.frame.size, targetView.isOpaque, 0.0)
         let context = UIGraphicsGetCurrentContext()
         
         if let unwrappedContext : CGContext = context {
-            targetView.layer.renderInContext(unwrappedContext)
+            targetView.layer.render(in: unwrappedContext)
             let snapshotImage = UIGraphicsGetImageFromCurrentImageContext()
             UIGraphicsEndImageContext()
             
@@ -413,21 +413,21 @@ public class Swiftuna : NSObject {
         backgroundView.addSubview(snapshotView!)
         
         if let unwrappedSnapshotView : UIImageView = snapshotView {
-            unwrappedSnapshotView.layer.anchorPoint = CGPointMake(0, 0.5)
-            unwrappedSnapshotView.layer.position = CGPointMake(unwrappedSnapshotView.layer.position.x - unwrappedSnapshotView.layer.bounds.size.width / 2, unwrappedSnapshotView.layer.position.y)
+            unwrappedSnapshotView.layer.anchorPoint = CGPoint(x: 0, y: 0.5)
+            unwrappedSnapshotView.layer.position = CGPoint(x: unwrappedSnapshotView.layer.position.x - unwrappedSnapshotView.layer.bounds.size.width / 2, y: unwrappedSnapshotView.layer.position.y)
         }
     }
     
-    private func transformSnapshotView() {
+    fileprivate func transformSnapshotView() {
     
         if let unwrappedSnapshotView : UIImageView = snapshotView {
             var identity = CATransform3DIdentity
             identity.m34 = 0.001
-            unwrappedSnapshotView.layer.transform = CATransform3DRotate(identity, CGFloat(-20 / 180 * M_PI), 0, 1, 0)
+            unwrappedSnapshotView.layer.transform = CATransform3DRotate(identity, CGFloat(-20 / 180 * Double.pi), 0, 1, 0)
         }
     }
     
-    private func transformBackSnapshotView() {
+    fileprivate func transformBackSnapshotView() {
         
         if let unwrappedSnapshotView : UIImageView = snapshotView {
 
@@ -435,11 +435,11 @@ public class Swiftuna : NSObject {
         }
     }
     
-    private func setupBackSnapshotView() {
+    fileprivate func setupBackSnapshotView() {
         
         if let unwrappedSnapshotView : UIImageView = snapshotView {
-            unwrappedSnapshotView.layer.anchorPoint = CGPointMake(0.5, 0.5)
-            unwrappedSnapshotView.layer.position = CGPointMake(0, unwrappedSnapshotView.layer.position.y)
+            unwrappedSnapshotView.layer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+            unwrappedSnapshotView.layer.position = CGPoint(x: 0, y: unwrappedSnapshotView.layer.position.y)
         }
     }
 }

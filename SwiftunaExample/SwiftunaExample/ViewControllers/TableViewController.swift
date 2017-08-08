@@ -15,21 +15,21 @@ class TableViewController: UITableViewController {
 
     //MARK: UITableViewDelegate
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return 5
     }
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         
         return 1
     }
     
     //MARK: UITableViewDataSource
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier(kExampleCellIdentifier) as! ExampleCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: kExampleCellIdentifier) as! ExampleCell
         
         cell.exampleTitleLabel.text = String(format: "Title for item number %d", indexPath.row)
         cell.exampleDescriptionLabel.text = String(format: "Description for item number %d", indexPath.row)
@@ -40,7 +40,7 @@ class TableViewController: UITableViewController {
     
     //MARK: Private methods
     
-    private func decorateCell(cell : UITableViewCell) {
+    fileprivate func decorateCell(_ cell : UITableViewCell) {
         
         let options = [
             SwiftunaOption(image: UIImage(named: "Search")!),

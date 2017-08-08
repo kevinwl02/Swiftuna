@@ -30,14 +30,14 @@ private let kButtonHeight : CGFloat = 70
 *  This class is the representation of a selectable object in the options
 *  view
 */
-public class SwiftunaOption : NSObject {
+open class SwiftunaOption : NSObject {
     
     /// The image defines the whole graphical aspect that the option will
     /// display
-    public var image : UIImage
+    open var image : UIImage
     
     /// The display size of the option
-    public var size : CGSize
+    open var size : CGSize
     
     /**
     Initializes the option with an image to display and default size
@@ -49,7 +49,7 @@ public class SwiftunaOption : NSObject {
     public init(image : UIImage) {
         
         self.image = image
-        self.size = CGSizeMake(kButtonWidth, kButtonHeight)
+        self.size = CGSize(width: kButtonWidth, height: kButtonHeight)
         super.init()
     }
 }
