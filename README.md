@@ -15,7 +15,7 @@ The example's source code can be found in the SwiftunaExample project.
 Add this to your Podfile:
 
 ```ruby
-pod 'Swiftuna', '~> 0.0.2'
+pod 'Swiftuna', '~> 0.0.4'
 ```
 
 ### Manual installation:
